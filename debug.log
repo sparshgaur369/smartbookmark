@@ -1,0 +1,11 @@
+2026-02-19T06:06:51.041Z [console][error] ./user/app/src/app
+An issue occurred while preparing your Next.js app
+Conflicting route and page at /auth/callback: route at /auth/callback/route and page at /auth/callback/page
+2026-02-19T06:06:51.041Z [console][error] ./user/app/src/app
+An issue occurred while preparing your Next.js app
+Conflicting route and page at /auth/callback: route at /auth/callback/route and page at /auth/callback/page
+2026-02-19T06:06:51.038Z [console][log] [HMR] connected
+2026-02-19T06:06:51.041Z [console][error] ./user/app/src/app
+An issue occurred while preparing your Next.js app
+Conflicting route and page at /auth/callback: route at /auth/callback/route and page at /auth/callback/page
+2026-02-19T06:06:51.049Z [console][log] {"file":{"fileName":"./user/app/src/app"}}
