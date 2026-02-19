@@ -56,7 +56,7 @@ export default function SectionOverlay() {
     return (
         <div className="relative z-10 w-full h-full">
             {/* HERO: 0 - 0.25 */}
-            <Section start={0} end={0.25} scrollYProgress={scrollYProgress}>
+            {/* <Section start={0} end={0.25} scrollYProgress={scrollYProgress}>
                 <div className="text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-white/5 border border-white/10 text-[10px] uppercase tracking-[0.2em] text-neon-emerald backdrop-blur-md">
                         <div className="w-1 h-1 rounded-full bg-neon-emerald animate-pulse" />
@@ -70,10 +70,10 @@ export default function SectionOverlay() {
                         Stop chasing invoices. Let AI be your Financial Controller.
                     </p>
                 </div>
-            </Section>
+            </Section> */}
 
             {/* REVEAL: 0.25 - 0.50 */}
-            <Section start={0.25} end={0.50} scrollYProgress={scrollYProgress} className="!items-start !justify-center pl-10 md:pl-32">
+            {/* <Section start={0.25} end={0.50} scrollYProgress={scrollYProgress} className="!items-start !justify-center pl-10 md:pl-32">
                 <div className="max-w-xl backdrop-blur-xl bg-deep-navy/40 p-10 rounded-3xl border border-white/5 shadow-2xl">
                     <div className="flex items-center gap-2 mb-4 text-electric-violet">
                         <Zap className="w-5 h-5" fill="currentColor" />
@@ -84,16 +84,16 @@ export default function SectionOverlay() {
                     </h2>
                     <p className="text-blue-200/60 mb-8 text-lg">
                         JustPaid scans PDFs, extracts billing logic, and identifies revenue leakage instantly. No manual entry. No human error.
-                    </p>
+                    // </p>
                     <div className="flex gap-4 text-xs font-mono text-white/50">
                         <div className="px-3 py-2 bg-white/5 rounded border border-white/10">OCR ACCURACY: 99.9%</div>
                         <div className="px-3 py-2 bg-white/5 rounded border border-white/10">SPEED: &lt;200ms</div>
                     </div>
                 </div>
-            </Section>
+            </Section> */}
 
             {/* AI CORE: 0.50 - 0.75 */}
-            <Section start={0.50} end={0.75} scrollYProgress={scrollYProgress} className="!items-end !justify-center pr-10 md:pr-32">
+            {/* <Section start={0.50} end={0.75} scrollYProgress={scrollYProgress} className="!items-end !justify-center pr-10 md:pr-32">
                 <div className="text-right max-w-xl">
                     <h2 className="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-electric-violet to-white font-heading">
                         Billing on <br /> Autopilot.
@@ -110,10 +110,10 @@ export default function SectionOverlay() {
                         ))}
                     </div>
                 </div>
-            </Section>
+            </Section> */}
 
             {/* DASHBOARD: 0.75 - 0.95 */}
-            <Section start={0.75} end={1.0} scrollYProgress={scrollYProgress}>
+            {/* <Section start={0.75} end={1.0} scrollYProgress={scrollYProgress}>
                 <div className="text-center mt-auto mb-32">
                     <h2 className="text-5xl md:text-8xl font-bold mb-4 text-white font-heading tracking-tight">
                         Total Financial Clarity.
@@ -127,7 +127,7 @@ export default function SectionOverlay() {
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
-            </Section>
+            </Section> */}
         </div>
     );
 }
