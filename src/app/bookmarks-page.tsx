@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User, RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Bookmark = {
   id: string;
@@ -99,104 +100,133 @@ export default function BookmarksPage({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
-          <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
-            Smart Bookmarks
-          </h1>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">
-              {initialUser.email}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="relative min-h-screen bg-[#050505] text-zinc-200 font-sans selection:bg-white/20 overflow-hidden">
+  {/* Ambient 3D Background Glow */}
+  <div className="pointer-events-none absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+  <div className="pointer-events-none absolute -top-[20%] -left-[10%] h-[600px] w-[600px] rounded-full bg-white/[0.03] blur-[120px]"></div>
+  <div className="pointer-events-none absolute -bottom-[20%] -right-[10%] h-[600px] w-[600px] rounded-full bg-indigo-500/[0.03] blur-[120px]"></div>
 
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <form onSubmit={addBookmark} className="mb-8 space-y-3">
-          <div className="flex gap-3">
-            <input
-              type="text"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
-              required
-            />
-            <input
-              type="url"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
-              required
-            />
-          </div>
+  <header className="relative z-10 border-b border-white/[0.04] bg-black/40 backdrop-blur-2xl">
+    <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-gradient-to-br from-white/[0.08] to-transparent shadow-[0_0_20px_rgba(255,255,255,0.03)] backdrop-blur-md">
+          <svg className="h-5 w-5 text-zinc-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+          </svg>
+        </div>
+        <h1 className="text-xl font-medium tracking-tight text-zinc-100">
+          Smart Bookmarks
+        </h1>
+      </div>
+      <div className="flex items-center gap-5">
+        <span className="hidden text-sm font-medium text-zinc-500 sm:block">
+          {initialUser.email}
+        </span>
+        <button
+          onClick={handleLogout}
+          className="group relative overflow-hidden rounded-full border border-white/[0.05] bg-white/[0.02] px-5 py-2 text-sm font-medium text-zinc-400 transition-all duration-300 hover:bg-white/[0.08] hover:text-zinc-100 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] active:scale-95"
+        >
+          Sign out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main className="relative z-10 mx-auto max-w-3xl px-6 py-12 md:py-20">
+    <form onSubmit={addBookmark} className="group relative mb-12 rounded-[2rem] border border-white/[0.04] bg-white/[0.01] p-2 shadow-2xl backdrop-blur-xl transition-all hover:border-white/[0.08]">
+      <div className="absolute -inset-0.5 rounded-[2rem] bg-gradient-to-b from-white/[0.08] to-transparent opacity-0 blur transition duration-500 group-hover:opacity-100"></div>
+      <div className="relative flex flex-col sm:flex-row rounded-3xl bg-black/40 backdrop-blur-md">
+        
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full flex-1 bg-transparent px-6 py-4 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+          required
+        />
+        
+        <div className="hidden w-px bg-white/[0.05] sm:block"></div>
+        <div className="h-px w-full bg-white/[0.05] sm:hidden"></div>
+
+        <input
+          type="url"
+          placeholder="https://example.com"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className="w-full flex-1 bg-transparent px-6 py-4 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+          required
+        />
+        
+        <div className="p-2 sm:pl-0">
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+            className="flex h-full w-full items-center justify-center rounded-2xl bg-zinc-100 px-6 py-3 text-sm font-semibold text-zinc-900 shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-all hover:scale-[0.98] hover:bg-white active:scale-95 disabled:opacity-50 disabled:hover:scale-100 sm:w-auto"
           >
             {loading ? "Adding..." : "Add Bookmark"}
           </button>
-        </form>
+        </div>
+      </div>
+    </form>
 
-        {bookmarks.length === 0 ? (
-          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-            No bookmarks yet. Add one above!
-          </p>
-        ) : (
-          <ul className="space-y-2">
-            {bookmarks.map((bookmark) => (
-              <li
-                key={bookmark.id}
-                className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900"
+    {bookmarks.length === 0 ? (
+      <div className="flex flex-col items-center justify-center rounded-[2rem] border border-white/[0.02] bg-white/[0.01] py-24 text-center backdrop-blur-sm">
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.02]">
+          <svg className="h-6 w-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </div>
+        <p className="text-sm font-medium text-zinc-400">
+          No bookmarks yet. Add one above!
+        </p>
+      </div>
+    ) : (
+      <ul className="space-y-3">
+        {bookmarks.map((bookmark) => (
+          <li
+            key={bookmark.id}
+            className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-white/[0.03] bg-white/[0.01] p-4 transition-all duration-300 hover:-translate-y-1 hover:border-white/[0.08] hover:bg-white/[0.03] hover:shadow-[0_10px_30px_-15px_rgba(0,0,0,0.5)] sm:p-5"
+          >
+            <div className="min-w-0 flex-1 pr-4">
+              <a
+                href={bookmark.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mb-1 block truncate text-[15px] font-medium text-zinc-200 transition-colors hover:text-white"
               >
-                <div className="min-w-0 flex-1">
-                  <a
-                    href={bookmark.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block truncate text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
-                  >
-                    {bookmark.title}
-                  </a>
-                  <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-                    {bookmark.url}
-                  </p>
-                </div>
-                <button
-                  onClick={() => deleteBookmark(bookmark.id)}
-                  className="ml-3 shrink-0 rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
-                  aria-label="Delete bookmark"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </main>
-    </div>
+                {bookmark.title}
+              </a>
+              <p className="truncate text-xs text-zinc-500 transition-colors group-hover:text-zinc-400">
+                {bookmark.url}
+              </p>
+            </div>
+            
+            <button
+              onClick={() => deleteBookmark(bookmark.id)}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.04] bg-white/[0.02] text-zinc-500 opacity-0 transition-all hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
+              aria-label="Delete bookmark"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+          </li>
+        ))}
+      </ul>
+    )}
+  </main>
+</div>
   );
 }
