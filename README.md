@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+    ## Project Architecture
 
-## Getting Started
+    ### 1. Website Architecture
 
-First, run the development server:
+    The application is built using Next.js (App Router), React, Tailwind CSS, and Supabase for backend services (Auth and PostgreSQL database). 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+    ```mermaid
+    graph TD
+        classDef client fill:#e1f5fe,stroke:#01579b,color:#000
+        classDef server fill:#fff3e0,stroke:#e65100,color:#000
+        classDef external fill:#f3e5f5,stroke:#4a148c,color:#000
+        classDef db fill:#e8f5e9,stroke:#1b5e20,color:#000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+        subgraph Frontend [Client Side - Next.js]
+            UI[React Components]:::client
+            State[React State & Hooks]:::client
+            ChatBox[ChatBox Component]:::client
+            RealtimeClient[Supabase Realtime Sub]:::client
+        end
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+        subgraph Backend [Server Side - Next.js App Router]
+            ChatAPI[POST /api/chat Route]:::server
+            Auth[Supabase Auth SSR]:::server
+        end
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+        subgraph ExternalServices [External Services]
+            SupabaseDB[(Supabase PostgreSQL)]:::db
+            OpenAI[OpenAI API]:::external
+        end
 
-## Learn More
+        UI --> |User Interactions| State
+        State <--> |Props & Callbacks| ChatBox
+        ChatBox --> |HTTP POST Messages| ChatAPI
+        RealtimeClient <--> |WebSocket| SupabaseDB
+        RealtimeClient --> |Dispatch UI Updates| State
+        
+        ChatAPI --> |Function Calling / LLM| OpenAI
+        ChatAPI --> |CRUD Operations| SupabaseDB
+        Auth <--> |Session Validation| SupabaseDB
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+    ---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ## Challenges & Solutions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    ### Implementing the UI-Controlling Chatbot
 
-## Deploy on Vercel
+    **The Problem:**
+    Initially, we attempted to implement the AI chatbot using Vercel's AI SDK `streamText` function and defining tools with `zod` schemas for strict type validation. However, this approach led to persistent schema mismatch errors. The AI model's output or the SDK's internal parsing would frequently fail with `Invalid schema for function 'addBookmark': schema must be a JSON Schema of 'type: "object"', got 'type: "None"'`. This prevented the AI from reliably executing tools to update the UI (like adding or deleting bookmarks).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    **The Solution:**
+    To resolve this, we pivoted to a more robust, standard approach using the plain OpenAI function calling format and direct tool execution, bypassing the `steamText` and `zod` schema complexities that were causing conflicts:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    1. **Plain Function Calling Format:** Instead of relying on `zod` to generate the JSON schema for tools, we manually defined the `TOOLS` array using the exact JSON Schema required by the OpenAI API.
+    2. **Direct OpenAI Integration:** We replaced the higher-level SDK wrapper with a direct `fetch` call to the `https://api.openai.com/v1/chat/completions` endpoint.
+    3. **Manual Tool Execution Loop:** We implemented a custom loop in the `/api/chat/route.ts` API route. This loop sends the conversation to OpenAI. If OpenAI responds with a `tool_calls` request, our backend intercepts it, parses the arguments (which are now reliably formatted based on our explicit JSON schema), executes the corresponding Supabase database operation, appends the tool result to the conversation history, and sends it back to OpenAI for a final natural language response.
+
+    This change completely eliminated the Zod schema errors, providing a stable, reliable mechanism for the AI Chatbot to control the application's state via backend function execution, which then seamlessly updates the frontend UI via Supabase Real-time subscriptions.
